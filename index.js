@@ -1,7 +1,7 @@
 import express from "express";
-import path from "node:path";
 import http from "node:http";
-import createBareServer from "@tomphttp/node-server-bare";
+import createBareServer from "@tomphttp/bare-server-node";
+import path from "node:path";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -18,28 +18,30 @@ app.use(
 );
 
 app.use(express.static(path.join(__dirname, "static")));
-
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "static", "index.html"));
-  });
+  res.sendFile(path.join(__dirname, "static", "index.html"));
+});
 
+server.on("request", (req, res) => {
+  if (bareServer.shouldRoute(req)) {
+    bareServer.routeRequest(req, res);
+  } else {
+    app(req, res);
+  }
+});
 
-  server.on("request", (req, res) => {
-    if (bareServer.shouldRoute(req)) {
-      bareServer.routeRequest(req, res);
-    } else {
-      app(req, res);
-    }
-  });
-  
-  server.on("upgrade", (req, socket, head) => {
-    if (bareServer.shouldRoute(req)) {
-      bareServer.routeUpgrade(req, socket, head);
-    } else {
-      socket.end();
-    }
-  });
-  
-  server.on("listening", () => {
-    console.log(`Diamond Proxy shining on port 8080 ${process.env.PORT}`);
-  });
+server.on("upgrade", (req, socket, head) => {
+  if (bareServer.shouldRoute(req)) {
+    bareServer.routeUpgrade(req, socket, head);
+  } else {
+    socket.end();
+  }
+});
+
+server.on("listening", () => {
+  console.log(`Diamond Proxy listening on port 8080 ${process.env.PORT}`);
+});
+
+server.listen({
+  port: process.env.PORT,
+});
