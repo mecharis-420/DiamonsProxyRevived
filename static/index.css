@@ -25,7 +25,7 @@ body {
 }
 
 .fa-magnifying-glass {
-    color: #black;
+    color:black;
 }
 
 .logo-wrapper {
@@ -43,11 +43,11 @@ body {
 .logo-wrapper .text {
     font-size: 75px;
     font-family: "Roboto";
-    color: #black;
+    color: black;
 }
 
 .logo-wrapper h1 {
-    color: #black;
+    color: black;
 }
 
 footer {
